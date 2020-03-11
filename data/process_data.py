@@ -1,3 +1,4 @@
+''' Preprocess the raw data '''
 import sys
 import pandas as pd
 import numpy as np
@@ -6,6 +7,14 @@ from collections import defaultdict
 
 
 def load_data(messages_filepath, categories_filepath):
+    ''' 
+    Merge two data source
+    Input:
+        messages_filepath -- message data source with csv file format
+        categories_filepath -- categories data source with csv file format
+    Return:
+        merged pandas dataframe
+    '''
     # load messages dataset
     messages = pd.read_csv(messages_filepath)
     print("messages raw data shape {}".format(messages.shape))
@@ -21,7 +30,9 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
-
+    ''' 
+    Perform data cleaning procedures and return cleaned dataframe 
+    '''
     # create a dataframe of the 36 individual category columns
     df_ = df['categories'].str.split(';', expand=True)
 
@@ -74,6 +85,9 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+    '''
+    save dataframe to sqlite database
+    '''
     # load to db
     stm = "sqlite:///"+ database_filename
     print(stm)

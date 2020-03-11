@@ -1,3 +1,4 @@
+''' Train a classifier '''
 import sys
 import re
 import sys
@@ -30,7 +31,7 @@ from sklearn.metrics import f1_score
 
 def load_data(database_filepath):
     '''
-    load the clean data
+    load data from sqlite db which was output of data preprocessing
     '''
     # read in file
     # load data from database
