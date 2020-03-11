@@ -48,6 +48,9 @@ t_results = pd.read_csv("../results.csv")
 @app.route('/')
 @app.route('/index')
 def index():
+    '''
+    show home page and display Plotly figures
+    '''
     
     # extract data needed for visuals
     labels_ = list(df.columns[-36:].values)
@@ -105,6 +108,9 @@ def index():
 # web page that handles user query and displays model results
 @app.route('/go')
 def go():
+    '''
+    responsible for user click Classify message button
+    '''
     # save user input in query
     query = request.args.get('query', '') 
 
@@ -122,14 +128,18 @@ def go():
 # web page that headles display all category to link to detail train report
 @app.route('/showall')
 def show_all():
+    '''
+    display all categories to click to show the individual detailed train results
+    '''
     # list all class to access individule class test results
     return render_template('train_report.html', cat=cat_reshaped)
 
 
 @app.route('/<string:cat_name>/details')
 def show_details(cat_name):
-    print(cat_name)
-    
+    '''
+    responsible for user click each category to show the detailed train results
+    '''
     # find the individual class
     data = t_results[t_results['cat'] == cat_name]
 
@@ -176,6 +186,10 @@ def show_details(cat_name):
 
 
 def proc_clf_report(report):
+    '''
+    help function for processing the classification report of each category
+    return the list of classification report
+    '''
     t_list = []
     sp = report.split("\n")
     for i in range(len(sp)):
@@ -185,6 +199,15 @@ def proc_clf_report(report):
 
 
 def return_figures(confuz, lbl, r_list):
+    '''
+    utility function to prepare the figures for Plotly display
+    Input:
+        confuz -- confusion matrix saved during model evaluation
+        lbl -- all categories
+        r_list -- classificaiton report in 2-D array
+    Return:
+        the plotly figures
+    '''
     
     graph_one = []
 
