@@ -3,14 +3,14 @@ import plotly
 import re
 import pandas as pd
 import numpy as np
-
+import operator
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
 from flask import Flask
 from flask import render_template, request, jsonify
 
-from plotly.graph_objs import Bar, Heatmap
+from plotly.graph_objs import Bar, Heatmap, Pie
 
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
@@ -36,6 +36,8 @@ print(df.columns)
 print(df.shape)
 cat_reshaped = np.array(df.columns[4:]).reshape(9,4)
 
+
+
 # load model
 model = joblib.load("../models/classifier.pkl")
 
@@ -48,30 +50,47 @@ t_results = pd.read_csv("../results.csv")
 def index():
     
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
-    genre_counts = df.groupby('genre').count()['message']
-    genre_names = list(genre_counts.index)
-    
+    labels_ = list(df.columns[-36:].values)
+    d_cnt = {}
+    for i in labels_:
+        c = df[i].values.sum()
+        print(c)
+        d_cnt[i]=c
+    sorted_d = sorted(d_cnt.items(), key=operator.itemgetter(1),reverse=True)
+    top_10 = sorted_d[:10]
+
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
                 Bar(
-                    x=genre_names,
-                    y=genre_counts
+                    x=[top_10[i][0] for i in range(10)],
+                    y=[top_10[i][1] for i in range(10)]
                 )
             ],
 
             'layout': {
-                'title': 'Distribution of Message Genres',
+                'title': 'Count Messages in Categories (Top 10)',
                 'yaxis': {
                     'title': "Count"
                 },
                 'xaxis': {
-                    'title': "Genre"
+                    'title': "Type"
                 }
             }
+        },
+        {
+            'data': [
+                Pie(
+                    labels=[top_10[i][0] for i in range(10)],
+                    values=[top_10[i][1] for i in range(10)]
+                )
+            ],
+
+            'layout': {
+                'title': 'Percentage of Messages in Categories (Top 10)',
+            }
+
         }
     ]
     
