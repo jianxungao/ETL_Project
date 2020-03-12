@@ -8,12 +8,15 @@ from collections import defaultdict
 
 def load_data(messages_filepath, categories_filepath):
     ''' 
+    INPUT:
+    messages_filepath - the messages data source with csv file format
+    categories_filepath - the categories data source with csv file format
+
+    OUTPUT:
+    df - the merged dataframes of the 2 input data source based on their common column name called 'id'
+
+    Description:
     Merge two data source
-    Input:
-        messages_filepath -- message data source with csv file format
-        categories_filepath -- categories data source with csv file format
-    Return:
-        merged pandas dataframe
     '''
     # load messages dataset
     messages = pd.read_csv(messages_filepath)
@@ -31,6 +34,13 @@ def load_data(messages_filepath, categories_filepath):
 
 def clean_data(df):
     ''' 
+    INPUT:
+    df - the merged dataframe of two data source
+
+    OUTPUT:
+    df_f - the clean dataframe with proper format
+
+    Description:
     Perform data cleaning procedures and return cleaned dataframe 
     '''
     # create a dataframe of the 36 individual category columns
@@ -86,7 +96,12 @@ def clean_data(df):
 
 def save_data(df, database_filename):
     '''
-    save dataframe to sqlite database
+    INPUT:
+    df - the clean dataframe
+    database_filename - the sqlite database name
+
+    Description:
+    save the dataframe to a sqlite database
     '''
     # load to db
     stm = "sqlite:///"+ database_filename

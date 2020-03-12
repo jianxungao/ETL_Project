@@ -19,6 +19,16 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 
 def tokenize(text):
+    '''
+    INPUT:
+    text - the raw text
+
+    OUTPUT:
+    clean_tokens - the list of normalized and lematized tokens
+
+    Description:
+    Text normalization and lemmatization
+    '''
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -41,7 +51,7 @@ cat_reshaped = np.array(df.columns[4:]).reshape(9,4)
 # load model
 model = joblib.load("../models/classifier.pkl")
 
-# load train results
+# load evaluation results
 t_results = pd.read_csv("../results.csv")
 
 # index webpage displays cool visuals and receives user input text for model
@@ -125,11 +135,11 @@ def go():
         classification_result=classification_results
     )
 
-# web page that headles display all category to link to detail train report
+# web page that headles display all category to link to detail model evaluation report
 @app.route('/showall')
 def show_all():
     '''
-    display all categories to click to show the individual detailed train results
+    display all categories to click to show the individual detailed model evaluation results
     '''
     # list all class to access individule class test results
     return render_template('train_report.html', cat=cat_reshaped)
@@ -138,7 +148,14 @@ def show_all():
 @app.route('/<string:cat_name>/details')
 def show_details(cat_name):
     '''
-    responsible for user click each category to show the detailed train results
+    INPUT:
+    cat_name - an individual category
+
+    OUTPUT:
+    Render the 'train_report_detail.html' page with proper data
+
+    Description:
+    responsible for user click each category to show the detailed model evaluation results
     '''
     # find the individual class
     data = t_results[t_results['cat'] == cat_name]
@@ -187,6 +204,13 @@ def show_details(cat_name):
 
 def proc_clf_report(report):
     '''
+    INPUT:
+    report - the raw format of the classification report of a individual category
+
+    OUTPUT:
+    t_list - list format of the classification report
+
+    Description:
     help function for processing the classification report of each category
     return the list of classification report
     '''
@@ -200,13 +224,16 @@ def proc_clf_report(report):
 
 def return_figures(confuz, lbl, r_list):
     '''
+    INPUT:
+    confuz -- confusion matrix saved during model evaluation
+    lbl -- all categories
+    r_list -- the classificaiton report in list of list format
+
+    OUTPUT:
+    figures - the plotly figures
+
+    Description:
     utility function to prepare the figures for Plotly display
-    Input:
-        confuz -- confusion matrix saved during model evaluation
-        lbl -- all categories
-        r_list -- classificaiton report in 2-D array
-    Return:
-        the plotly figures
     '''
     
     graph_one = []

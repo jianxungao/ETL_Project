@@ -31,7 +31,16 @@ from sklearn.metrics import f1_score
 
 def load_data(database_filepath):
     '''
-    load data from sqlite db which was output of data preprocessing
+    INPUT:
+    database_filepath - sqlite database name and path
+
+    OUTPUT:
+    X - numpy array of train data
+    Y - numpy array of label data
+    category_names - list of categories
+
+    Description:
+    load data from sqlite db and return data for train
     '''
     # read in file
     # load data from database
@@ -50,6 +59,13 @@ def load_data(database_filepath):
 
 def tokenize(text): 
     '''
+    INPUT:
+    text - row text 
+    
+    OUTPUT:
+    clean_tokens - list of normalized and lemmatized tokens
+
+    Description: 
     text normalizaton, lemmatization and toknization
     '''
     # Remove punctuation characters
@@ -68,6 +84,10 @@ def tokenize(text):
 
 def build_model():
     '''
+    OUTPUT:
+    model - gridsearch object with pipeline
+
+    Description:
     build pipeline with grid search enabled
     '''
     # text processing and model pipeline
@@ -96,7 +116,18 @@ def build_model():
 
 def display_results(y_test, y_pred):
     '''
-    display test results
+    INPUT:
+    y_test - the original Y value of each category after train test split
+    y_pred - the model prediction of each categroy based on X test
+
+    OUTPUT:
+    labels - the different subcategories of each category 
+    confusion_mat - the confusion matrix for subcategory of each category
+    accuracy - the accuracy value for each individual category
+    clf_report - the classification report for each individual category
+
+    Description:
+    display and return the test results
     '''
     labels = np.unique(y_pred)
     confusion_mat = confusion_matrix(y_test, y_pred, labels=labels)
@@ -112,6 +143,16 @@ def display_results(y_test, y_pred):
 
 
 def evaluate_model(model, X_test, y_test, category_names):
+    '''
+    INPUT:
+    model - the model after training
+    X_test - the X test data after train test split
+    y_test - the Y true after train test split
+    category_names - the list of all names of each category
+
+    Description:
+    Using the test data to evaluate the model and save the model evaluation results to a csv file
+    '''
     
     # use best model
     y_pred = model.predict(X_test)
@@ -167,6 +208,11 @@ def evaluate_model(model, X_test, y_test, category_names):
 
 def save_model(model, model_filepath):
     '''
+    INPUT:
+    model - the final model
+    model_filepath - the model name and path to persist
+
+    Description:
     save best model to a file
     '''
     # Export model as a pickle file
